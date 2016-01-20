@@ -92,6 +92,7 @@ public:
 		checkOpenGL();
 
 		m_material->bind();
+		m_material->getUniformLocations(m_shader);
 		checkOpenGL();
 
 		// Draw the colored triangle
@@ -109,9 +110,6 @@ public:
 		glVertexAttribPointer(2, 2, GL_FLOAT, 0, 0, TexCoord);
 		checkOpenGL();
 		glEnableVertexAttribArray(2);
-		checkOpenGL();
-
-		m_material->getUniformLocations(m_shader);
 		checkOpenGL();
 
 		/*glUniform1f(glGetUniformLocation(m_shader->getProgram(), "totalTime"), m_countTime);
