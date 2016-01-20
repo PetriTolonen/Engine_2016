@@ -91,11 +91,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp" />
+    <ClCompile Include="..\..\src\MyMaterials.cpp" />
     <ClCompile Include="..\..\src\scene.cpp" />
     <ClCompile Include="..\..\src\teapot.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\FullScreenQuadScene.h" />
+    <ClInclude Include="..\..\include\FullScreenQuadShaderScene.h" />
+    <ClInclude Include="..\..\include\MyMaterials.h" />
     <ClInclude Include="..\..\include\scene.h" />
     <ClInclude Include="..\..\include\teapot.h" />
     <ClInclude Include="..\..\include\TriangleScene.h" />

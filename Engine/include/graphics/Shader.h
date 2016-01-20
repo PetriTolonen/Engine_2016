@@ -5,6 +5,7 @@
 #include <EASTL/vector.h>
 #include <EASTL/string.h>
 #include <graphics/FrmShader.h>
+#include <core\Object.h>
 
 namespace graphics
 {
