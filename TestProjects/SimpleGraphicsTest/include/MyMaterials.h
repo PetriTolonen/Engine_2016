@@ -7,6 +7,7 @@ using namespace graphics;
 struct SharedShaderValues
 {
 	float totalTime = 0.0f;
+	slmath::mat4 matModelViewProj;
 };
 
 class GlobalShaderUniforms : public ShaderUniforms 
@@ -21,4 +22,5 @@ public:
 private:
 	const SharedShaderValues* m_sharedShaderValues;
 	GLint m_id;
+	GLint m_idMat;
 };
