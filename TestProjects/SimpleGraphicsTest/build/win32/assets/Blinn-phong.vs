@@ -6,7 +6,6 @@ uniform vec3 g_lightPos;
 
 attribute vec4 g_vPositionOS;
 attribute vec3 g_vNormalOS;
-attribute vec2 g_vTexCoord;	
 
 varying   vec2 g_vTexCoordES;
 varying   vec3 g_vNormalES;
@@ -17,7 +16,7 @@ void main()
 {
 	vec4 vPositionES = g_matModelView     * g_vPositionOS;
 	vec4 vPositionCS = g_matModelViewProj * g_vPositionOS;
-	vec3 vLightPosES = (g_matView * vec4(g_lightPos, 1.0)).xyx;
+	vec3 vLightPosES = (g_matView * vec4(g_lightPos, 1.0)).xyz;
 	
 	vec3 vNormalES = (g_matNormal * vec4(g_vNormalOS, 0.0)).xyz;
 	

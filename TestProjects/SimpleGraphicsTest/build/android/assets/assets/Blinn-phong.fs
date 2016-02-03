@@ -17,13 +17,9 @@ struct MATERIAL
 
 uniform MATERIAL g_Material;
 
-varying   vec2 g_vVSTexCoord;
-
 varying   vec3 g_vViewVecES;
 varying   vec3 g_vNormalES;	
-varying   vec3 g_vLightVecES;
-
-uniform float totalTime;	
+varying   vec3 g_vLightVecES;	
 
 void main()
 {
@@ -42,5 +38,5 @@ void main()
 	
 	gl_FragColor.rgba = vec4(0.15,0.15,0.15,0.15)*g_Material.vAmbient;
 	gl_FragColor.rgba += g_Material.vDiffuse * fDiffuse;
-	gl_FragColor += SelfShadow * vec3(0.15,0.15,0.15) * g_Material.vSpecular.xyz*fSpecular;
+	gl_FragColor.rgb += SelfShadow * vec3(0.15,0.15,0.15) * g_Material.vSpecular.xyz*fSpecular;
 }

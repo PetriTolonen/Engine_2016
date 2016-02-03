@@ -18,9 +18,6 @@ graphics::Mesh* createTeapotMeshBlinn()
 
 		new graphics::VertexArrayImpl<slmath::vec3>(
 		graphics::ATTRIB_NORMAL, (slmath::vec3*)TeapotData::normals, TeapotData::numVertices),
-
-		new graphics::VertexArrayImpl<slmath::vec3>(
-		graphics::ATTRIB_UV, (slmath::vec3*)TeapotData::texCoords, TeapotData::numVertices)
 	};
 
 	graphics::VertexBuffer* vb = new graphics::VertexBuffer(&va[0], sizeof(va) / sizeof(va[0]));
@@ -39,10 +36,9 @@ public:
 
 		m_count = 0.0f;
 
-		FRM_SHADER_ATTRIBUTE attributes[3] = {
+		FRM_SHADER_ATTRIBUTE attributes[2] = {
 			{ "g_vPositionOS", graphics::ATTRIB_POSITION },
 			{ "g_vNormalOS", graphics::ATTRIB_NORMAL },
-			{ "g_vTexCoord", graphics::ATTRIB_UV }
 		};
 
 		m_shader =
@@ -57,6 +53,9 @@ public:
 
 		m_material = simpleMaterialUniforms;
 		m_mesh = createTeapotMeshBlinn();
+
+		//m_mesh = graphics::Mesh::loadFromOBJ("assets/Sphere.obj");
+		m_mesh2 = graphics::Mesh::loadFromOBJ("assets/Torus.obj");
 
 		checkOpenGL();
 	}
@@ -77,7 +76,7 @@ public:
 		if (m_count > 1.0f)
 			m_count = 0.0f;
 
-		//m_sharedValues.totalTime += deltaTime;
+		m_sharedValues.totalTime += deltaTime;
 
 		float fAspect = (float)esContext->width / (float)esContext->height;
 		m_matProjection = slmath::perspectiveFovRH(
@@ -86,18 +85,27 @@ public:
 			5.0f,
 			1000.0f);
 
-		//cameraX = 50 * cos(m_totalTime);
-		//cameraY = 50 * sin(m_totalTime);
-		cameraY = 70;
+		// Moving camera
+		//cameraX = 5 * cos(m_totalTime);
+		//cameraY = 5 * sin(m_totalTime);
+		//cameraY = 70.0f;
+		cameraZ = 7.0f;
+
+
+		// Moving light
+		lightX = 5 * cos(m_totalTime);
+		lightY = 5 * sin(m_totalTime);
+		lightZ = 7.0f;
 
 		m_matView = slmath::lookAtRH(
-			slmath::vec3(cameraX, cameraY, 70.0f),
-			slmath::vec3(0.0f, 15.0f, 0.0f),
+			slmath::vec3(cameraX, cameraY, cameraZ),
+			slmath::vec3(0.0f, 0.0f, 0.0f),
 			slmath::vec3(0.0f, 1.0f, 0.0f));
 
 		m_matModel = slmath::rotationX(-3.1415f*0.5f);
 		m_matModel = slmath::rotationY(0) * m_matModel;
 		m_matModel = slmath::translation(slmath::vec3(0.0f, 0.0f, 0.0f)) * m_matModel;
+		m_matModel = slmath::scaling(0.01f)*m_matModel;
 
 		// sharedShaderValues stuff
 		m_sharedValues.matModel = m_matModel;
@@ -112,8 +120,8 @@ public:
 		m_sharedValues.matNormal = matNormal;
 		m_sharedValues.matModelViewProj = matModelViewProj;
 
-		m_sharedValues.lightPos = slmath::vec3(0.0f, 70.0f, 70.0f);
-		m_sharedValues.camPos = slmath::vec3(cameraX, cameraY, 70.0f);
+		m_sharedValues.lightPos = slmath::vec3(lightX, lightY, lightZ);
+		m_sharedValues.camPos = slmath::vec3(cameraX, cameraY, cameraZ);
 	}
 
 
@@ -126,7 +134,7 @@ public:
 		checkOpenGL();
 
 		// Clear the backbuffer and depth-buffer
-		glClearColor(m_count, m_count, m_count, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		checkOpenGL();
 
@@ -141,6 +149,9 @@ public:
 
 		m_mesh->render();
 		checkOpenGL();
+
+		m_mesh2->render();
+		checkOpenGL();
 	}
 private:
 	float m_count;
@@ -148,6 +159,11 @@ private:
 
 	float cameraX = 0.0f;
 	float cameraY = 0.0f;
+	float cameraZ = 0.0f;
+
+	float lightX = 0.0f;
+	float lightY = 0.0f;
+	float lightZ = 0.0f;
 
 	core::Ref<graphics::Shader> m_shader;
 
@@ -159,6 +175,7 @@ private:
 	slmath::mat4 m_matModel;
 
 	core::Ref<Mesh> m_mesh;
+	core::Ref<Mesh> m_mesh2;
 };
 
 
