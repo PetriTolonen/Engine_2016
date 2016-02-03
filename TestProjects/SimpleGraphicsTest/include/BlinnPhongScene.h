@@ -7,7 +7,7 @@
 #include "teapot.h"
 #include <graphics\Mesh.h>
 
-graphics::Mesh* createTeapotMesh()
+graphics::Mesh* createTeapotMeshBlinn()
 {
 	graphics::IndexBuffer* ib = new graphics::IndexBuffer(TeapotData::indices, TeapotData::numIndices);
 
@@ -49,8 +49,14 @@ public:
 			new graphics::Shader("assets/Blinn-phong.vs", "assets/Blinn-phong.fs",
 			attributes, sizeof(attributes) / sizeof(FRM_SHADER_ATTRIBUTE));
 
-		m_material = new GlobalShaderUniforms(m_shader, &m_sharedValues);
-		m_mesh = createTeapotMesh();
+		SimpleMaterialUniforms* simpleMaterialUniforms = new SimpleMaterialUniforms(m_shader, &m_sharedValues);
+
+		simpleMaterialUniforms->vAmbient = slmath::vec4(0.5f, 0.2f, 1.0f, 1.0f);
+		simpleMaterialUniforms->vDiffuse = slmath::vec4(0.5f, 0.2f, 1.0f, 1.0f);
+		simpleMaterialUniforms->vSpecular = slmath::vec4(1.0f, 1.0f, 1.0f, 0.5f);
+
+		m_material = simpleMaterialUniforms;
+		m_mesh = createTeapotMeshBlinn();
 
 		checkOpenGL();
 	}
@@ -71,8 +77,7 @@ public:
 		if (m_count > 1.0f)
 			m_count = 0.0f;
 
-		m_sharedValues.totalTime += deltaTime;
-		m_sharedValues.matModel = m_matModel;
+		//m_sharedValues.totalTime += deltaTime;
 
 		float fAspect = (float)esContext->width / (float)esContext->height;
 		m_matProjection = slmath::perspectiveFovRH(
@@ -93,6 +98,22 @@ public:
 		m_matModel = slmath::rotationX(-3.1415f*0.5f);
 		m_matModel = slmath::rotationY(0) * m_matModel;
 		m_matModel = slmath::translation(slmath::vec3(0.0f, 0.0f, 0.0f)) * m_matModel;
+
+		// sharedShaderValues stuff
+		m_sharedValues.matModel = m_matModel;
+		m_sharedValues.matView = m_matView;
+		m_sharedValues.matProj = m_matProjection;
+
+		slmath::mat4 matModelView = m_matView * m_matModel;
+		slmath::mat4 matModelViewProj = m_matProjection * matModelView;
+		slmath::mat4 matNormal = slmath::transpose(slmath::inverse(matModelView));
+
+		m_sharedValues.matModelView = matModelView;
+		m_sharedValues.matNormal = matNormal;
+		m_sharedValues.matModelViewProj = matModelViewProj;
+
+		m_sharedValues.lightPos = slmath::vec3(0.0f, 70.0f, 70.0f);
+		m_sharedValues.camPos = slmath::vec3(cameraX, cameraY, 70.0f);
 	}
 
 
@@ -114,11 +135,6 @@ public:
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 		checkOpenGL();
-
-		slmath::mat4 matModelView = m_matView * m_matModel;
-		slmath::mat4 matModelViewProj = m_matProjection * matModelView;
-
-		m_sharedValues.matModelViewProj = matModelViewProj;
 
 		m_material->bind();
 		checkOpenGL();
