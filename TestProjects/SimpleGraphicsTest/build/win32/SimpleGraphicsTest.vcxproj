@@ -96,6 +96,7 @@
     <ClCompile Include="..\..\src\teapot.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\BlinnPhongScene.h" />
     <ClInclude Include="..\..\include\FullScreenQuadScene.h" />
     <ClInclude Include="..\..\include\FullScreenQuadShaderScene.h" />
     <ClInclude Include="..\..\include\MyMaterials.h" />

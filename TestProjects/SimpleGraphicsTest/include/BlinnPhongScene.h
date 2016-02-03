@@ -16,7 +16,7 @@ graphics::Mesh* createTeapotMesh()
 		new graphics::VertexArrayImpl<slmath::vec3>(
 		graphics::ATTRIB_POSITION, (slmath::vec3*)TeapotData::positions, TeapotData::numVertices),
 
-		new graphics::VertexArrayImpl<slmath::vec3> (
+		new graphics::VertexArrayImpl<slmath::vec3>(
 		graphics::ATTRIB_NORMAL, (slmath::vec3*)TeapotData::normals, TeapotData::numVertices),
 
 		new graphics::VertexArrayImpl<slmath::vec3>(
@@ -28,27 +28,27 @@ graphics::Mesh* createTeapotMesh()
 	return new graphics::Mesh(ib, vb);
 }
 
-class SimpleMeshRenderingScene : public Scene
+class BlinnPhongScene : public Scene
 {
 public:
-	SimpleMeshRenderingScene()
+	BlinnPhongScene()
 	{
 
-		LOG("SimpleMeshRenderingScene construct");
+		LOG("BlinnPhongScene construct");
 		checkOpenGL();
 
 		m_count = 0.0f;
 
 		FRM_SHADER_ATTRIBUTE attributes[3] = {
 			{ "g_vPositionOS", graphics::ATTRIB_POSITION },
-			{ "g_vNormalOS" , graphics::ATTRIB_NORMAL },
+			{ "g_vNormalOS", graphics::ATTRIB_NORMAL },
 			{ "g_vTexCoord", graphics::ATTRIB_UV }
 		};
 
 		m_shader =
-			new graphics::Shader("assets/Simple3d.vs", "assets/Simple3d.fs",
+			new graphics::Shader("assets/Blinn-phong.vs", "assets/Blinn-phong.fs",
 			attributes, sizeof(attributes) / sizeof(FRM_SHADER_ATTRIBUTE));
-		
+
 		m_material = new GlobalShaderUniforms(m_shader, &m_sharedValues);
 		m_mesh = createTeapotMesh();
 
@@ -56,10 +56,10 @@ public:
 	}
 
 
-	virtual ~SimpleMeshRenderingScene()
+	virtual ~BlinnPhongScene()
 	{
 		glDeleteProgram(m_shader->getProgram());
-		LOG("SimpleMeshRenderingScene destruct");
+		LOG("BlinnPhongScene destruct");
 	}
 
 
@@ -72,6 +72,7 @@ public:
 			m_count = 0.0f;
 
 		m_sharedValues.totalTime += deltaTime;
+		m_sharedValues.matModel = m_matModel;
 
 		float fAspect = (float)esContext->width / (float)esContext->height;
 		m_matProjection = slmath::perspectiveFovRH(
@@ -102,7 +103,7 @@ public:
 		// Set the viewport
 		glViewport(0, 0, esContext->width, esContext->height);
 		checkOpenGL();
-			
+
 		// Clear the backbuffer and depth-buffer
 		glClearColor(m_count, m_count, m_count, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
