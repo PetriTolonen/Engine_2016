@@ -6,11 +6,13 @@ uniform vec3 g_lightPos;
 
 attribute vec4 g_vPositionOS;
 attribute vec3 g_vNormalOS;
+attribute vec3 g_vTexCoordsOS;
 
-varying   vec2 g_vTexCoordES;
 varying   vec3 g_vNormalES;
 varying   vec3 g_vViewVecES;
 varying   vec3 g_vLightVecES;
+
+varying   vec3 g_vTexCoordsES;
 
 void main()
 {
@@ -24,4 +26,6 @@ void main()
 	g_vNormalES = normalize(vNormalES.xyz);
 	g_vViewVecES = normalize(-vPositionES.xyz);
 	g_vLightVecES = normalize(vLightPosES - vPositionES.xyz);
+	
+	g_vTexCoordsES = g_vTexCoordsOS;
 }

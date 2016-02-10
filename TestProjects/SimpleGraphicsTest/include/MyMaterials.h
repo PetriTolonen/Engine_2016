@@ -1,6 +1,7 @@
 #pragma once
 
 #include <graphics\Shader.h>
+#include <graphics\Texture.h>
 
 using namespace graphics;
 
@@ -39,6 +40,7 @@ public:
 	slmath::vec4 vAmbient;
 	slmath::vec4 vDiffuse;
 	slmath::vec4 vSpecular;
+	core::Ref<graphics::Texture> diffuseMap;
 
 	SimpleMaterialUniforms(Shader* shader, const SharedShaderValues* sharedValues = 0) :
 		ShaderUniforms(shader),
@@ -56,6 +58,7 @@ public:
 		m_materialAmbientLoc = glGetUniformLocation(shader->getProgram(), "g_Material.vAmbient");
 		m_materialDiffuseLoc = glGetUniformLocation(shader->getProgram(), "g_Material.vDiffuse");
 		m_materialSpecularLoc = glGetUniformLocation(shader->getProgram(), "g_Material.vSpecular");
+		m_diffuseMapLocation = glGetUniformLocation(shader->getProgram(), "difTexture");
 	}
 
 	virtual void bind(graphics::Shader * shader)
@@ -65,6 +68,11 @@ public:
 		glUniform4fv(m_materialAmbientLoc, 1, &vAmbient.x);
 		glUniform4fv(m_materialDiffuseLoc, 1, &vDiffuse.x);
 		glUniform4fv(m_materialSpecularLoc, 1, &vSpecular.x);
+
+		glActiveTexture(GL_TEXTURE0 + 0);
+		glBindTexture(GL_TEXTURE_2D, diffuseMap->getTextureId());
+
+		glUniform1i(m_diffuseMapLocation, 0);
 	}
 
 private:
@@ -72,5 +80,6 @@ private:
 	GLint m_materialAmbientLoc;
 	GLint m_materialDiffuseLoc;
 	GLint m_materialSpecularLoc;
+	GLint m_diffuseMapLocation;
 
 };

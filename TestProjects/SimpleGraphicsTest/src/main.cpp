@@ -40,11 +40,11 @@ void changeCurrentScene(int index)
 	assert( index >= 0 && index<NUM_SCENES);
 	switch( index )
 	{
-	/*case 0: m_currentScene = new TriangleScene(); break;
+	case 0: m_currentScene = new TriangleScene(); break;
 	case 1: m_currentScene = new FullScreenQuadScene(); break;
 	case 2: m_currentScene = new FullScreenQuadShaderScene(); break;
-	case 3: m_currentScene = new SimpleMeshRenderingScene(); break;*/
-	case 0: m_currentScene = new BlinnPhongScene(); break;
+	case 3: m_currentScene = new SimpleMeshRenderingScene(); break;
+	case 4: m_currentScene = new BlinnPhongScene(); break;
 	default:
 		break;
 	}

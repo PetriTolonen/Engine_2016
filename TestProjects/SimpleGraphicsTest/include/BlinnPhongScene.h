@@ -2,6 +2,8 @@
 #include <core/log.h>
 
 #include <graphics\Shader.h>
+#include <graphics\Texture.h>
+#include <graphics\Image.h>
 #include "MyMaterials.h"
 
 #include "teapot.h"
@@ -18,6 +20,10 @@ graphics::Mesh* createTeapotMeshBlinn()
 
 		new graphics::VertexArrayImpl<slmath::vec3>(
 		graphics::ATTRIB_NORMAL, (slmath::vec3*)TeapotData::normals, TeapotData::numVertices),
+
+		new graphics::VertexArrayImpl<slmath::vec3>(
+		graphics::ATTRIB_UV, (slmath::vec3*)TeapotData::texCoords, TeapotData::numVertices)
+
 	};
 
 	graphics::VertexBuffer* vb = new graphics::VertexBuffer(&va[0], sizeof(va) / sizeof(va[0]));
@@ -36,9 +42,10 @@ public:
 
 		m_count = 0.0f;
 
-		FRM_SHADER_ATTRIBUTE attributes[2] = {
+		FRM_SHADER_ATTRIBUTE attributes[3] = {
 			{ "g_vPositionOS", graphics::ATTRIB_POSITION },
 			{ "g_vNormalOS", graphics::ATTRIB_NORMAL },
+			{ "g_vTexCoordOS", graphics::ATTRIB_UV }
 		};
 
 		m_shader =
@@ -50,12 +57,18 @@ public:
 		simpleMaterialUniforms->vAmbient = slmath::vec4(0.5f, 0.2f, 1.0f, 1.0f);
 		simpleMaterialUniforms->vDiffuse = slmath::vec4(0.5f, 0.2f, 1.0f, 1.0f);
 		simpleMaterialUniforms->vSpecular = slmath::vec4(1.0f, 1.0f, 1.0f, 0.5f);
+		
+		texture = new Texture2D();
+		
+		
+		image = graphics::Image::loadFromTGA("assets/CheckerBoard.tga");
+		texture->setData(image);
+
+		simpleMaterialUniforms->diffuseMap = texture;
+		
 
 		m_material = simpleMaterialUniforms;
 		m_mesh = createTeapotMeshBlinn();
-
-		//m_mesh = graphics::Mesh::loadFromOBJ("assets/Sphere.obj");
-		m_mesh2 = graphics::Mesh::loadFromOBJ("assets/Torus.obj");
 
 		checkOpenGL();
 	}
@@ -82,14 +95,13 @@ public:
 		m_matProjection = slmath::perspectiveFovRH(
 			slmath::radians(45.0f),
 			fAspect,
-			5.0f,
+			0.1f,
 			1000.0f);
 
 		// Moving camera
-		//cameraX = 5 * cos(m_totalTime);
-		//cameraY = 5 * sin(m_totalTime);
-		//cameraY = 70.0f;
-		cameraZ = 7.0f;
+		cameraX = 0.0f;
+		cameraY = 0.7f;
+		cameraZ = 4 * cos(m_totalTime) +5.0f;
 
 
 		// Moving light
@@ -149,9 +161,6 @@ public:
 
 		m_mesh->render();
 		checkOpenGL();
-
-		m_mesh2->render();
-		checkOpenGL();
 	}
 private:
 	float m_count;
@@ -175,7 +184,10 @@ private:
 	slmath::mat4 m_matModel;
 
 	core::Ref<Mesh> m_mesh;
-	core::Ref<Mesh> m_mesh2;
+
+	core::Ref<Texture2D> texture;
+	core::Ref<Image> image;
+	
 };
 
 
