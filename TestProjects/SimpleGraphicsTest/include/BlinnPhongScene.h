@@ -56,7 +56,7 @@ public:
 
 		simpleMaterialUniforms->vAmbient = slmath::vec4(0.5f, 0.2f, 1.0f, 1.0f);
 		simpleMaterialUniforms->vDiffuse = slmath::vec4(0.5f, 0.2f, 1.0f, 1.0f);
-		simpleMaterialUniforms->vSpecular = slmath::vec4(1.0f, 1.0f, 1.0f, 0.5f);
+		simpleMaterialUniforms->vSpecular = slmath::vec4(1.0f, 1.0f, 1.0f, 50.0f);
 		
 		texture = new Texture2D();
 		
@@ -105,9 +105,11 @@ public:
 
 
 		// Moving light
-		lightX = 5 * cos(m_totalTime);
-		lightY = 5 * sin(m_totalTime);
-		lightZ = 7.0f;
+		//lightX = 5 * cos(m_totalTime);
+		//lightY = 5 * sin(m_totalTime);
+		lightX = 2.0f;
+		lightY = 2.0f;
+		lightZ = 2.0f;
 
 		m_matView = slmath::lookAtRH(
 			slmath::vec3(cameraX, cameraY, cameraZ),
