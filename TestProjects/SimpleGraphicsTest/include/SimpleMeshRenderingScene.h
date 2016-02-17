@@ -109,7 +109,7 @@ public:
 		checkOpenGL();
 
 		glDisable(GL_BLEND);
-		glEnable(GL_CULL_FACE);
+		//glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 		checkOpenGL();

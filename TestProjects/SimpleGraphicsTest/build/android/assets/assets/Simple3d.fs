@@ -16,7 +16,7 @@ void main()
     float y = g_vVSTexCoord.y * 256.0;								
 	float vv = 0.25 * sin(0.5 + (0.5*sin(x / 7.0 + totalTime))) + (0.5 + (0.5*sin(y / 5.0 - totalTime))) + (0.5 + (0.5 * sin((x + y) / 6.0 - totalTime))) + (0.5 + (0.5*sin(sqrt(float(x*x + y*y)) / 4.0 - totalTime))); 		
     vv = vv/2.5;
-	if(vv < 0.9)
+	if(vv > 0.5)
 	gl_FragColor = vec4(vv, vv, vv, 1.0);
 	else
 	discard;

@@ -222,6 +222,7 @@ void engineAssert(const char* expression, const char* file, int line )
 	eastl::string s;
 	s.sprintf("Assertation failed at %s:%d: %s", file, line, expression );
 	LOG_ERROR(s.c_str());
+	DebugBreak();
 	throw std::exception(s.c_str());
 }
 
