@@ -41,12 +41,13 @@ void main()
 	
 	vec4 texColor = texture2D(difTexture, vec2(g_vTexCoordsES),1.0).rgba;
 	vec4 glossyColor = texture2D(glossyTexture, vec2(g_vTexCoordsES),1.0).rgba;
-	float fDiffuse = NdotL;
+	float fDiffuse = NdotL;	
 	
-	float fSpecular = pow(NdotH, g_Material.vSpecular.w);
 	float SelfShadow = 4.0 * fDiffuse;
 	float glossyFactor = g_Material.vGlossyness.x * glossyColor.x;
 	vec4 color = (1.0-glossyFactor)*texColor + (glossyFactor)*vEnvColor;
+	
+	float fSpecular = pow(NdotH, g_Material.vSpecular.w)*glossyFactor;
 	
 	gl_FragColor.rgba = vec4(0.15, 0.15, 0.15, 1.0) * g_Material.vAmbient*color;
 	gl_FragColor.rgba += g_Material.vDiffuse * color * fDiffuse;

@@ -56,5 +56,8 @@
     <ClInclude Include="..\..\include\CubeMapScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\RenderTargetScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
