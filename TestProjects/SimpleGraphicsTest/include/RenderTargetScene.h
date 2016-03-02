@@ -108,6 +108,12 @@ public:
 		m_spriteBatch = new graphics::SpriteBatchGroup();
 
 		checkOpenGL();
+
+		glDisable(GL_BLEND);
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+		checkOpenGL();
 	}
 
 
@@ -151,14 +157,14 @@ public:
 		m_matView = slmath::lookAtRH(
 			slmath::vec3(cameraX, cameraY, cameraZ),
 			slmath::vec3(0.0f, 0.0f, 0.0f),
-			slmath::vec3(0.0f, 1.0f, 0.0f));
+			slmath::vec3(0.0f, 1.0f, 0.0f));	
 
 		cameraX = 0.7*cos(m_totalTime);
 		cameraZ = 0.7*sin(m_totalTime);
 
 		m_matView2 = slmath::lookAtRH(
-			slmath::vec3(cameraX, 0.8f, cameraZ),
-			slmath::vec3(0.0f, 0.0f, 0.0f),
+			slmath::vec3(cameraX, cameraY, cameraZ),
+			slmath::vec3(0.0f, 0.2f, 0.0f),
 			slmath::vec3(0.0f, 1.0f, 0.0f));
 
 		m_matModel = slmath::rotationX(-3.1415f*0.5f);
@@ -212,12 +218,6 @@ public:
 		// Clear the backbuffer and depth-buffer
 		glClearColor(0.0f, 0.8f, 0.8f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glDisable(GL_BLEND);
-		glEnable(GL_CULL_FACE);
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);
-		checkOpenGL();
 
 		m_material->bind();
 		checkOpenGL();
@@ -278,7 +278,6 @@ private:
 	slmath::mat4 m_matView;
 	slmath::mat4 m_matView2;
 	slmath::mat4 m_matModel;
-	slmath::mat4 m_matModel2;
 
 	core::Ref<Mesh> m_mesh;
 
