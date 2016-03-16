@@ -66,13 +66,13 @@ public:
 
 
 		image = graphics::Image::loadFromTGA("assets/CheckerBoard.tga");
-		texture->setData(image);
+		texture->setData(image, Texture::LINEAR_FILTERING);
 
 		simpleMaterialUniforms->diffuseMap = texture;
 		checkOpenGL();
 
 		image2 = graphics::Image::loadFromTGA("assets/CheckerBoardGlossyMap.tga");
-		texture2->setData(image2);
+		texture2->setData(image2, Texture::LINEAR_FILTERING);
 
 		simpleMaterialUniforms->glossyMap = texture2;
 		checkOpenGL();
@@ -104,12 +104,13 @@ public:
 		m_material = simpleMaterialUniforms;
 		checkOpenGL();
 		m_mesh = createTeapotMeshTargetScene();
+		m_mesh2 = graphics::Mesh::loadFromOBJ("assets/plane100.obj");
 
 		m_spriteBatch = new graphics::SpriteBatchGroup();
 
 		checkOpenGL();
 
-		glDisable(GL_BLEND);
+		glEnable(GL_BLEND);
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
@@ -141,29 +142,12 @@ public:
 			0.1f,
 			1000.0f);
 
-		// Moving camera
-		cameraX = 0.0f;
-		cameraY = 0.7f;
-		cameraZ = cos(m_totalTime) + 1.01f;
-
-
-		// Moving light
-		//lightX = 5 * cos(m_totalTime);
-		//lightY = 5 * sin(m_totalTime);
-		lightX = 0.0f;
-		lightY = 1.0f;
-		lightZ = 2.0f;
-
-		m_matView = slmath::lookAtRH(
-			slmath::vec3(cameraX, cameraY, cameraZ),
-			slmath::vec3(0.0f, 0.0f, 0.0f),
-			slmath::vec3(0.0f, 1.0f, 0.0f));	
-
-		cameraX = 0.7*cos(m_totalTime);
-		cameraZ = 0.7*sin(m_totalTime);
+		cameraX2 = 0.7*cos(m_totalTime);
+		cameraY2 = 0.7f;		
+		cameraZ2 = 0.7*sin(m_totalTime);
 
 		m_matView2 = slmath::lookAtRH(
-			slmath::vec3(cameraX, cameraY, cameraZ),
+			slmath::vec3(cameraX2, cameraY2, cameraZ2),
 			slmath::vec3(0.0f, 0.2f, 0.0f),
 			slmath::vec3(0.0f, 1.0f, 0.0f));
 
@@ -185,8 +169,24 @@ public:
 		m_sharedValues.matNormal = matNormal;
 		m_sharedValues.matModelViewProj = matModelViewProj;
 
+		// Moving camera big screen
+		cameraX = 0.0f;
+		cameraY = 0.7f;
+		cameraZ = cos(m_totalTime) + 1.01f;
+
+		// Moving light
+		//lightX = 5 * cos(m_totalTime);
+		//lightY = 5 * sin(m_totalTime);
+		lightX = 0.0f;
+		lightY = 1.0f;
+		lightZ = 2.0f;
+
+		m_matView = slmath::lookAtRH(
+			slmath::vec3(cameraX, cameraY, cameraZ),
+			slmath::vec3(0.0f, 0.0f, 0.0f),
+			slmath::vec3(0.0f, 1.0f, 0.0f));
+
 		m_sharedValues.lightPos = slmath::vec3(lightX, lightY, lightZ);
-		m_sharedValues.camPos = slmath::vec3(cameraX, cameraY, cameraZ);
 
 		if (m_renderTarget == 0)
 		{
@@ -225,17 +225,21 @@ public:
 		m_mesh->render();
 		checkOpenGL();
 
+		m_mesh2->render();
+		checkOpenGL();
+
 		m_renderTarget->unbind();
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+		// Changing camera values for different render
 		m_sharedValues.matView = m_matView;
 
-		// Changing camera values for different render
 		slmath::mat4 matModelView = m_matView * m_matModel;
 		slmath::mat4 matModelViewProj = m_matProjection * matModelView;
 		slmath::mat4 matNormal = slmath::transpose(slmath::inverse(matModelView));
-
+		
+		m_sharedValues.matModelView = matModelView;
 		m_sharedValues.matNormal = matNormal;
 		m_sharedValues.matModelViewProj = matModelViewProj;
 
@@ -245,7 +249,7 @@ public:
 		checkOpenGL();
 
 		// Clear the backbuffer and depth-buffer
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.0f, 0.8f, 0.8f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		checkOpenGL();
 
@@ -253,6 +257,9 @@ public:
 		checkOpenGL();
 
 		m_mesh->render();
+		checkOpenGL();
+
+		m_mesh2->render();
 		checkOpenGL();
 
 		m_spriteBatch->render();
@@ -264,6 +271,10 @@ private:
 	float cameraX = 0.0f;
 	float cameraY = 0.0f;
 	float cameraZ = 0.0f;
+
+	float cameraX2 = 0.0f;
+	float cameraY2 = 0.0f;
+	float cameraZ2 = 0.0f;
 
 	float lightX = 0.0f;
 	float lightY = 0.0f;
@@ -280,6 +291,7 @@ private:
 	slmath::mat4 m_matModel;
 
 	core::Ref<Mesh> m_mesh;
+	core::Ref<Mesh> m_mesh2;
 
 	core::Ref<Texture2D> texture;
 	core::Ref<Texture2D> texture2;

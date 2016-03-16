@@ -38,6 +38,9 @@ void changeCurrentScene(int index)
 	
 	refs.printAllocations();
 	m_currentScene = 0;
+
+	GLenum test = glGetError();
+
 	refs.printAllocations();
 	assert( index >= 0 && index<NUM_SCENES);
 	switch( index )
